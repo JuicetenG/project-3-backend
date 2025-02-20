@@ -90,20 +90,34 @@ router.post('/:projectId/tasks', verifyToken, async(req, res) => {
 router.put('/:projectId/tasks/:taskId', verifyToken, async(req, res) => {
   try{
     const project = await Project.findById(req.params.projectId);
-    
+    let task = await project.tasks.id(req.params.taskId);
+
     if(!project.user.equals(req.user._id)) {
       return res.status(403).send('access denied');
     }
 
-    task.name = req.body.name
-    task.description = req.body.description
-    task.priority = req.body.priority
-    task.isComplete = req.body.isComplete
-    task.category = req.body.category
-   
-    await project.save();
-    res.status(200).json(updatedTask);
+    task = {...task, ...req.body};
 
+    await project.save();
+    res.status(200).json(task);
+
+  } catch(err) {
+    res.status(500).json({ err: err.message });
+  }
+});
+
+router.delete('/:projectId/tasks/:taskId', verifyToken, async(req, res) => {
+  try {
+    const project = await Project.findById(req.params.projectId);
+
+    if(!project.user.equals(req.user._id)) {
+      return res.status(403).send('access denied');
+    }
+
+    project.tasks.remove({ _id: req.params.taskId });
+    await project.save();
+    res.status(200).json({ message: "deleted task" });
+    
   } catch(err) {
     res.status(500).json({ err: err.message });
   }
