@@ -23,7 +23,7 @@ mongoose.connection.on('connected', () => {
 // Middleware
 app.use(logger('dev'));
 app.use(cors());
-app.options('*', cors());
+// app.options('*', cors());
 app.use(express.json());
 app.use(logger('dev'));
 
@@ -38,7 +38,8 @@ app.use('/test-jwt', testJwtRouter);
 app.use('/users', usersRouter);
 app.use('/projects', projectsRouter);
 
-// Start the server and listen on port 3000
-app.listen(3000, () => {
-  console.log('The express app is ready!');
+app.set("port", process.env.PORT || 3000);
+
+app.listen(app.get("port"), () => {
+  console.log(`✅ PORT: ${app.get("port")} 🌟`);
 });
