@@ -31,9 +31,11 @@ router.post('/sign-up', async (req, res) => {
 });
 
 router.post('/sign-in', async (req, res) => {
+  console.log("servr");
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
+      console.log('if number 1')
       return res.status(401).json({ err: 'Invalid credentials.' });
     }
 
@@ -41,6 +43,7 @@ router.post('/sign-in', async (req, res) => {
       req.body.password, user.hashedPassword
     );
     if (!isPasswordCorrect) {
+      console.log('if number 2')
       return res.status(401).json({ err: 'Invalid credentials.' });
     }
 
@@ -50,6 +53,7 @@ router.post('/sign-in', async (req, res) => {
 
     res.status(200).json({ token });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ err: err.message });
   }
 });
