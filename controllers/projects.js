@@ -90,15 +90,16 @@ router.post('/:projectId/tasks', verifyToken, async(req, res) => {
 router.put('/:projectId/tasks/:taskId', verifyToken, async(req, res) => {
   try{
     const project = await Project.findById(req.params.projectId);
-    let task = await project.tasks.id(req.params.taskId);
+    let task = project.tasks.id(req.params.taskId);
 
     if(!project.user.equals(req.user._id)) {
       return res.status(403).send('access denied');
     }
 
-    task = {...task, ...req.body};
-
+    task.set({...task, ...req.body});
+ 
     await project.save();
+    console.log(project);
     res.status(200).json(task);
 
   } catch(err) {
