@@ -31,11 +31,9 @@ router.post('/sign-up', async (req, res) => {
 });
 
 router.post('/sign-in', async (req, res) => {
-  console.log("servr");
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) {
-      console.log('if number 1')
       return res.status(401).json({ err: 'Invalid credentials.' });
     }
 
@@ -48,12 +46,10 @@ router.post('/sign-in', async (req, res) => {
     }
 
     const payload = { username: user.username, _id: user._id };
-
     const token = jwt.sign({ payload }, process.env.JWT_SECRET);
 
     res.status(200).json({ token });
   } catch (err) {
-    console.log(err)
     res.status(500).json({ err: err.message });
   }
 });
