@@ -21,6 +21,7 @@ mongoose.connection.on('connected', () => {
 });
 
 // Middleware
+app.use(logger('dev'));
 app.use(cors());
 app.options('*', cors());
 app.use(express.json());
